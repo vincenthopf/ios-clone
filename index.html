@@ -49,6 +49,9 @@
             position: fixed; /* Prevent any scrolling */
             top: 0;
             left: 0;
+            /* Hide home indicator and extend to bottom */
+            padding-bottom: constant(safe-area-inset-bottom);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
         #iphone {
@@ -58,6 +61,7 @@
             position: relative;
             overflow: hidden;
             padding-top: var(--sat); /* Use safe area inset for top padding */
+            padding-bottom: 0; /* Ensure no padding at bottom */
         }
         
         .grid-container {
@@ -250,14 +254,14 @@
 <body>
     <div id="iphone">
         <div class="grid-container">
-            <!-- Weather Widget - Full Width & Symmetric but with padding for Dynamic Island -->
+            <!-- Weather Widget - Better aligned text -->
             <div class="widget weather-widget" style="grid-column: span 4; height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 30px; padding-top: 20px;">
-                <div id="location" style="font-size: 22px; margin-bottom: 8px; color: white;">Armidale</div>
-                <div class="widget-title" id="temperature" style="font-size: 80px; margin: 0; color: white; font-weight: 300;">62°</div>
-                <div class="widget-subtitle" style="margin: 8px 0; color: white;">
+                <div id="location" style="font-size: 22px; color: white; margin-top: -5px; margin-bottom: 5px;">Armidale</div>
+                <div class="widget-title" id="temperature" style="font-size: 80px; line-height: 1; margin: 0; color: white; font-weight: 300;">62°</div>
+                <div class="widget-subtitle" style="margin: 8px 0 3px 0; color: white;">
                     <span class="weather-icon">🌤️</span><span id="weather-condition">Mostly Sunny</span>
                 </div>
-                <div class="widget-detail" style="color: white;">H:<span id="high-temp">64</span>° L:<span id="low-temp">60</span>°</div>
+                <div class="widget-detail" style="color: white; font-size: 14px;">H:<span id="high-temp">64</span>° L:<span id="low-temp">60</span>°</div>
             </div>
             
             <!-- App Icons - Row 1 -->

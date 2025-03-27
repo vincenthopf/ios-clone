@@ -1,6 +1,6 @@
 // Service Worker for iOS Home PWA
 
-const CACHE_NAME = 'ios-home-v2';
+const CACHE_NAME = 'ios-home-v3';
 const urlsToCache = [
   './',
   './index.html',

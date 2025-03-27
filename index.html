@@ -37,23 +37,23 @@
         }
         
         body {
-            background-color: #000;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(160deg, #ffcdc6 0%, #ffc8a2 50%, #c3e5ff 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
         
         #iphone {
-            width: 375px;
-            height: 812px;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(160deg, #ffcdc6 0%, #ffc8a2 50%, #c3e5ff 100%);
-            border-radius: 40px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            padding-top: 30px; /* Add space at top for system status bar */
         }
         
         .grid-container {
@@ -224,38 +224,10 @@
 
         /* Removed Safari Browser Bar styles */
         
-        #install-prompt {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            text-align: center;
-            display: none;
-        }
-        
-        #install-prompt button {
-            background-color: #227aff;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
-        }
+        /* Removed install prompt styles */
     </style>
 </head>
 <body>
-    <div id="install-prompt">
-        <div>Add to Home Screen for the full experience</div>
-        <button id="install-button">Install</button>
-    </div>
-    
     <div id="iphone">
         <div class="grid-container">
             <!-- Weather Widget - Full Width & Symmetric -->
@@ -574,42 +546,28 @@
             });
         }
 
-        // Handle PWA installation
-        let deferredPrompt;
-        const installPrompt = document.getElementById('install-prompt');
-        const installButton = document.getElementById('install-button');
+            // Handle PWA installation silently
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent Chrome from automatically showing the prompt
+                e.preventDefault();
+                // Store the event
+                deferredPrompt = e;
+                
+                // Auto prompt for installation after a slight delay
+                setTimeout(() => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then(choiceResult => {
+                            deferredPrompt = null;
+                        });
+                    }
+                }, 3000);
+            });
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later
-            deferredPrompt = e;
-            // Show the install button
-            installPrompt.style.display = 'block';
-        });
-
-        installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            
-            // Show the installation prompt
-            deferredPrompt.prompt();
-            
-            // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            
-            // We've used the prompt, and can't use it again, throw it away
-            deferredPrompt = null;
-            
-            // Hide the install button
-            installPrompt.style.display = 'none';
-        });
-
-        // Check if the app is in standalone mode (PWA installed)
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-            console.log('App is running in standalone mode');
-            // You could add special behavior for installed PWA here
-        }
+            // Check if app is running in standalone mode
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                // PWA already installed
+            }
     </script>
 </body>
 </html>

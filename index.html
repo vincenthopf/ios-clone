@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#000000">
+    <!-- Additional meta tags to prevent UI elements -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffcdc6">
     <title>iOS Home Screen</title>
     
     <!-- PWA Meta Tags with enhanced iOS support -->
@@ -123,7 +127,7 @@
         
         .search-bar {
             position: absolute;
-            bottom: 130px;
+            bottom: 170px; /* Moved search bar up */
             left: 50%;
             transform: translateX(-50%);
             width: 65%;
@@ -229,7 +233,7 @@
 </head>
 <body>
     <div id="iphone">
-        <div class="grid-container">
+        <div class="grid-container" style="padding-bottom: 140px;"><!-- Added padding to avoid overlap with dock -->
             <!-- Weather Widget - Full Width & Symmetric -->
             <div class="widget weather-widget" style="grid-column: span 4; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 10px; border-radius: 24px;">
                 <div id="location" style="font-size: 20px; margin-bottom: 5px;">Armidale</div>
@@ -421,7 +425,7 @@
             <span style="margin-left: 8px;">Search</span>
         </div>
         
-        <div class="dock">
+        <div class="dock" style="bottom: 40px;"><!-- Moved dock up -->
             <div class="app-icon">
                 <div class="icon phone">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">

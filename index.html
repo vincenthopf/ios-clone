@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>iOS Home Screen</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="iOS Home">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #iphone {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(160deg, #ffcdc6 0%, #ffc8a2 50%, #c3e5ff 100%);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding-top: 30px; /* Add space at top for system status bar */
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(6, auto);
+            gap: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .widget {
+            grid-column: span 2;
+            border-radius: 20px;
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .weather-widget {
+            background-color: #227aff;
+            height: 140px;
+        }
+        
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            margin-bottom: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .icon-label {
+            font-size: 11px;
+            color: #000;
+            text-align: center;
+        }
+        
+        .dock {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 85px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+        }
+        
+        .search-bar {
+            position: absolute;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65%;
+            height: 36px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            color: rgba(0,0,0,0.7);
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .widget-title {
+            font-size: 28px;
+            font-weight: 500;
+            margin: 5px 0;
+        }
+        
+        .widget-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .widget-detail {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .weather-icon {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+        
+        .calendar-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            color: #ff3b30;
+            padding-bottom: 5px;
+        }
+        
+        .calendar-day {
+            font-size: 10px;
+            background-color: #ff3b30;
+            color: white;
+            width: 100%;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 2px 0;
+        }
+        
+        .calendar-date {
+            font-size: 32px;
+            font-weight: bold;
+            color: black;
+        }
+        
+        .facetime { background-color: #4cd964; }
+        .mail { background-color: #1991ff; }
+        .notes { background-color: #ffcc00; }
+        .reminders { background-color: white; }
+        .news { background-color: #ff3b30; }
+        .tv { background-color: #000000; }
+        .podcasts { background-color: #7d2bff; }
+        .appstore { background-color: #0a84ff; }
+        .maps { background-color: #56CCF2; }
+        .health { background-color: white; }
+        .wallet { background-color: #000000; }
+        .settings { background-color: #ccc; }
+        .phone { background-color: #4cd964; }
+        .safari { background-color: #0a84ff; }
+        .messages { background-color: #4cd964; }
+        .music { background-color: #ff3b30; }
+        .photos { background-color: #ffffff; }
+        .camera { background-color: #ccc; }
+
+        .red-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            background-color: #ff3b30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Safari Browser Bar for reference image */
+        .browser-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            background-color: rgba(239, 239, 244, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            padding: 10px 15px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        
+        .url-bar {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin-bottom: 10px;
+        }
+        
+        .url-text {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .browser-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .browser-button {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #0066cc;
+            font-size: 20px;
+        }
+        
+        #install-prompt {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            text-align: center;
+            display: none;
+        }
+        
+        #install-prompt button {
+            background-color: #227aff;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="install-prompt">
+        <div>Add to Home Screen for the full experience</div>
+        <button id="install-button">Install</button>
+    </div>
+    
+    <div id="iphone">
+        <div class="grid-container">
+            <!-- Weather Widget - Full Width & Symmetric -->
+            <div class="widget weather-widget" style="grid-column: span 4; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 10px; border-radius: 24px;">
+                <div id="location" style="font-size: 20px; margin-bottom: 5px;">Armidale</div>
+                <div class="widget-title" id="temperature" style="font-size: 48px; margin: 0;">62°</div>
+                <div class="widget-subtitle" style="margin: 5px 0;">
+                    <span class="weather-icon">🌤️</span><span id="weather-condition">Mostly Sunny</span>
+                </div>
+                <div class="widget-detail">H:<span id="high-temp">64</span>° L:<span id="low-temp">60</span>°</div>
+            </div>
+            
+            <!-- App Icons - Row 1 -->
+            <div class="app-icon">
+                <div class="icon facetime">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+                        <path d="M22 10l-4-2v8l4-2"></path>
+                    </svg>
+                </div>
+                <div class="icon-label">FaceTime</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon calendar-icon">
+                    <div class="calendar-day">MON</div>
+                    <div class="calendar-date">10</div>
+                </div>
+                <div class="icon-label">Calendar</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon photos">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 12h4v8h16V12h4L12 2z" stroke="none" fill="#FF9500"></path>
+                        <path d="M12 2L2 12h4v8h16V12h4L12 2z" stroke="none" fill="#FF3B30" transform="rotate(90 12 12)"></path>
+                        <path d="M12 2L2 12h4v8h16V12h4L12 2z" stroke="none" fill="#4CD964" transform="rotate(180 12 12)"></path>
+                        <path d="M12 2L2 12h4v8h16V12h4L12 2z" stroke="none" fill="#007AFF" transform="rotate(270 12 12)"></path>
+                    </svg>
+                </div>
+                <div class="icon-label">Photos</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon camera">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="icon-label">Camera</div>
+            </div>
+            
+            <!-- App Icons - Row 2 -->
+            <div class="app-icon">
+                <div class="icon mail">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <div class="icon-label">Mail</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon notes">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <line x1="4" y1="10" x2="20" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="icon-label">Notes</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon reminders" style="position: relative;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="#1c64db" stroke-width="2"></circle>
+                        <circle cx="12" cy="8" r="3" fill="#FF9500"></circle>
+                        <circle cx="12" cy="15" r="3" fill="#FF3B30"></circle>
+                        <circle cx="12" cy="22" r="3" fill="#FFCC00"></circle>
+                    </svg>
+                </div>
+                <div class="icon-label">Reminders</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon" style="background-color: #333; position: relative;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <div class="red-dot">3</div>
+                </div>
+                <div class="icon-label">Clock</div>
+            </div>
+            
+            <!-- App Icons - Row 3 -->
+            <div class="app-icon">
+                <div class="icon news">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M5 3L19 12L5 21V3Z"></path>
+                    </svg>
+                </div>
+                <div class="icon-label">News</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon tv">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                        <polyline points="17 2 12 7 7 2"></polyline>
+                    </svg>
+                </div>
+                <div class="icon-label">TV</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon podcasts">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="icon-label">Podcasts</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon appstore">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                    </svg>
+                </div>
+                <div class="icon-label">App Store</div>
+            </div>
+            
+            <!-- App Icons - Row 4 -->
+            <div class="app-icon">
+                <div class="icon maps">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+                <div class="icon-label">Maps</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon health">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF3B30">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+                <div class="icon-label">Health</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon wallet">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                        <path d="M15 8h.01"></path>
+                        <path d="M10 8h.01"></path>
+                        <rect x="2" y="9" width="20" height="6" fill="#FF3B30"></rect>
+                    </svg>
+                </div>
+                <div class="icon-label">Wallet</div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon settings">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="icon-label">Settings</div>
+            </div>
+        </div>
+        
+        <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span style="margin-left: 8px;">Search</span>
+        </div>
+        
+        <div class="dock">
+            <div class="app-icon">
+                <div class="icon phone">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon safari">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <line x1="12" y1="2" x2="12" y2="22"></line>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon messages">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="app-icon">
+                <div class="icon music">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safari Browser Bar - Based on reference image -->
+        <div class="browser-bar">
+            <div class="url-bar">
+                <div class="url-icon">🔒</div>
+                <div class="url-text">vincenthopf.com</div>
+                <div class="reload-icon">↻</div>
+            </div>
+            <div class="browser-controls">
+                <div class="browser-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </div>
+                <div class="browser-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+                <div class="browser-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
+                        <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="3 9 12 15 21 9"></polyline>
+                    </svg>
+                </div>
+                <div class="browser-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
+                        <path d="M4 11a9 9 0 0 1 9-9"></path>
+                        <path d="M4 4h6"></path>
+                        <path d="M20 13a9 9 0 0 1-9 9"></path>
+                        <path d="M20 20h-6"></path>
+                    </svg>
+                </div>
+                <div class="browser-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add touch effects to icons
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.icon');
+            
+            icons.forEach(function(icon) {
+                icon.addEventListener('mousedown', function() {
+                    this.style.transform = 'scale(0.9)';
+                    this.style.opacity = '0.7';
+                });
+                
+                icon.addEventListener('mouseup', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.opacity = '1';
+                });
+                
+                // For touch devices
+                icon.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.9)';
+                    this.style.opacity = '0.7';
+                });
+                
+                icon.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.opacity = '1';
+                });
+            });
+        });
+
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Handle PWA installation
+        let deferredPrompt;
+        const installPrompt = document.getElementById('install-prompt');
+        const installButton = document.getElementById('install-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show the install button
+            installPrompt.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            // Show the installation prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            
+            // We've used the prompt, and can't use it again, throw it away
+            deferredPrompt = null;
+            
+            // Hide the install button
+            installPrompt.style.display = 'none';
+        });
+
+        // Check if the app is in standalone mode (PWA installed)
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            console.log('App is running in standalone mode');
+            // You could add special behavior for installed PWA here
+        }
+    </script>
+</body>
+</html>

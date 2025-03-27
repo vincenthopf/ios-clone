@@ -2,15 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Additional meta tags to prevent UI elements -->
+    <!-- Enhanced viewport meta to ensure full coverage -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffcdc6">
-    <title>iOS Home Screen</title>
     
-    <!-- PWA Meta Tags with enhanced iOS support -->
+    <!-- PWA meta tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="iOS Home">
@@ -18,6 +13,9 @@
     <meta name="application-name" content="iOS Home">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#ffcdc6">
+    
+    <title>iOS Home Screen</title>
     
     <!-- Apple touch icons -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -25,9 +23,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png">
     
-    <!-- Splash screen images -->
-    <link rel="apple-touch-startup-image" href="apple-touch-icon.png">
-    
+    <!-- Web App Manifest -->
     <link rel="manifest" href="manifest.json">
     
     <style>
@@ -50,6 +46,9 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            position: fixed; /* Prevent any scrolling */
+            top: 0;
+            left: 0;
         }
         
         #iphone {
@@ -67,6 +66,7 @@
             gap: 20px;
             padding: 20px;
             margin-top: 20px;
+            padding-bottom: 140px; /* Added padding to avoid overlap with dock */
         }
         
         .widget {
@@ -111,7 +111,7 @@
         
         .dock {
             position: absolute;
-            bottom: 30px;
+            bottom: 40px; /* Moved dock up */
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -225,15 +225,22 @@
             font-size: 13px;
             font-weight: bold;
         }
-
-        /* Removed Safari Browser Bar styles */
         
-        /* Removed install prompt styles */
+        /* Ensure nothing shows at the bottom */
+        #bottom-spacer {
+            height: 100px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: transparent;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
     <div id="iphone">
-        <div class="grid-container" style="padding-bottom: 140px;"><!-- Added padding to avoid overlap with dock -->
+        <div class="grid-container">
             <!-- Weather Widget - Full Width & Symmetric -->
             <div class="widget weather-widget" style="grid-column: span 4; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 10px; border-radius: 24px;">
                 <div id="location" style="font-size: 20px; margin-bottom: 5px;">Armidale</div>
@@ -425,7 +432,7 @@
             <span style="margin-left: 8px;">Search</span>
         </div>
         
-        <div class="dock" style="bottom: 40px;"><!-- Moved dock up -->
+        <div class="dock">
             <div class="app-icon">
                 <div class="icon phone">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -462,49 +469,9 @@
                 </div>
             </div>
         </div>
-
-        <!-- Safari Browser Bar - Based on reference image -->
-        <div class="browser-bar">
-            <div class="url-bar">
-                <div class="url-icon">🔒</div>
-                <div class="url-text">vincenthopf.com</div>
-                <div class="reload-icon">↻</div>
-            </div>
-            <div class="browser-controls">
-                <div class="browser-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                </div>
-                <div class="browser-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </div>
-                <div class="browser-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
-                        <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="3 9 12 15 21 9"></polyline>
-                    </svg>
-                </div>
-                <div class="browser-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
-                        <path d="M4 11a9 9 0 0 1 9-9"></path>
-                        <path d="M4 4h6"></path>
-                        <path d="M20 13a9 9 0 0 1-9 9"></path>
-                        <path d="M20 20h-6"></path>
-                    </svg>
-                </div>
-                <div class="browser-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                </div>
-            </div>
-        </div>
+        
+        <!-- Additional bottom spacer to ensure no elements show at bottom -->
+        <div id="bottom-spacer"></div>
     </div>
 
     <script>
@@ -542,36 +509,29 @@
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js')
                     .then(function(registration) {
-                        console.log('Service Worker registered with scope:', registration.scope);
+                        // Successfully registered
                     })
                     .catch(function(error) {
-                        console.log('Service Worker registration failed:', error);
+                        // Registration failed
                     });
             });
         }
 
-            // Handle PWA installation silently
-            window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent Chrome from automatically showing the prompt
-                e.preventDefault();
-                // Store the event
-                deferredPrompt = e;
-                
-                // Auto prompt for installation after a slight delay
-                setTimeout(() => {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then(choiceResult => {
-                            deferredPrompt = null;
-                        });
-                    }
-                }, 3000);
-            });
-
-            // Check if app is running in standalone mode
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                // PWA already installed
-            }
+        // Handle PWA installation silently
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(choiceResult => {
+                        deferredPrompt = null;
+                    });
+                }
+            }, 3000);
+        });
     </script>
 </body>
 </html>
